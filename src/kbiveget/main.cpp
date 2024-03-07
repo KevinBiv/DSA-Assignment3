@@ -74,27 +74,18 @@ void averageNumberOfProbes(Node *root)
     count++;
 }
 
-void InOrderTraversal(Node *root, ofstream &outputFile, int &sumOfProbes, int &count)
+void InOrderTraversal(Node *root, ofstream &outputFile)
 {
     if (root == NULL)
     {
         return;
     }
-    InOrderTraversal(root->left, outputFile, sumOfProbes, count);
+    InOrderTraversal(root->left, outputFile);
 
     cout << root->word << "\t" << root->count << " (" << root->depth << ")" << endl;
     outputFile << root->word << "\t" << root->count << " (" << root->depth << ")" << endl;
 
-    // Computing the average number of probes
-    // TODO: CHECK IF ADDING 1 IS VALID (IF WE DON'T ADD IT THE AVERAGE IS NOT CORRECT), I THINK IT IS NECESSARY BUT CHECK
-    sumOfProbes = sumOfProbes + root->depth + 1; // ADDING ONE TO COMPUTE THE SUM OF PROBES WELL BECAUSE THE PROBES START FROM 0
-    count = count + 1;
-
-    cout << "sum of probes: "
-         << " " << sumOfProbes << "\t"
-         << "number of nodes: " << count << endl;
-
-    InOrderTraversal(root->right, outputFile, sumOfProbes, count);
+    InOrderTraversal(root->right, outputFile);
 }
 
 void InOrderTraversalToComputeMaximumAndAverageProbes(Node *root, ofstream &outputFile, int &sumOfProbes, int &count)
@@ -168,7 +159,7 @@ int main()
         outputFile << "Average number of probes: 0" << endl; // Handle division by zero
     }
 
-    InOrderTraversal(root, outputFile, sumOfProbes, count);
+    InOrderTraversal(root, outputFile);
 
     return 0;
 }
