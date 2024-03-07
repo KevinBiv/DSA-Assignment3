@@ -1,5 +1,6 @@
 kbiveget
-dsa	2 (2)
-love	3 (1)
-must	3 (3)
-you	1 (2)
+Average number of probes: 2
+dsa	2 (1)
+love	3 (0)
+must	3 (2)
+you	1 (1)
