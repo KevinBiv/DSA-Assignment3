@@ -83,50 +83,35 @@ void InOrderTraversal(Node *root, ofstream &outputFile)
     InOrderTraversal(root->left, outputFile);
 
     cout << root->word << "\t" << root->count << " (" << root->depth << ")" << endl;
-    outputFile << root->word << "\t" << root->count << " (" << root->depth << ")" << endl;
+    outputFile << root->word << " " << root->count << " (" << root->depth << ")" << endl;
 
     InOrderTraversal(root->right, outputFile);
 }
 
-void InOrderTraversalToComputeMaximumAndAverageProbes(Node *root, ofstream &outputFile, int &sumOfProbes, int &count)
+void InOrderTraversalToComputeMaximumAndAverageProbes(Node *root, ofstream &outputFile, int &sumOfProbes, int &count, int &maximumProbes)
 {
     if (root == NULL)
     {
         return;
     }
-    InOrderTraversalToComputeMaximumAndAverageProbes(root->left, outputFile, sumOfProbes, count);
+    InOrderTraversalToComputeMaximumAndAverageProbes(root->left, outputFile, sumOfProbes, count, maximumProbes);
+
+    // Computing the maximum number of probes
+    if (maximumProbes <= root->depth)
+    {
+        maximumProbes = root->depth;
+    }
 
     // Computing the average number of probes
     // TODO: CHECK IF ADDING 1 IS VALID (IF WE DON'T ADD IT THE AVERAGE IS NOT CORRECT), I THINK IT IS NECESSARY BUT CHECK
     sumOfProbes = sumOfProbes + root->depth + 1; // ADDING ONE TO COMPUTE THE SUM OF PROBES WELL BECAUSE THE PROBES START FROM 0
     count = count + 1;
 
-    InOrderTraversalToComputeMaximumAndAverageProbes(root->right, outputFile, sumOfProbes, count);
+    InOrderTraversalToComputeMaximumAndAverageProbes(root->right, outputFile, sumOfProbes, count, maximumProbes);
 }
-
-// void calculateAverageNumberOfProbes(ofstream &outputFile, double &averageNumberOfProbes, int &sumOfProbes)
-// {
-//     int count = 0;
-//     if (count > 0)
-//     {
-//         double averageProbe = static_cast<double>(sumOfProbes) / count;
-//         outputFile << "Average number of probes: " << averageProbe << endl;
-//         // averageNumberOfProbes = averageProbe;
-//     }
-//     else
-//     {
-//         outputFile << "Average number of probes: 0" << endl; // Handle division by zero
-//     }
-// }
 
 int main()
 {
-    Node *root = nullptr;
-
-    int sumOfProbes = 0;
-    int count = 0;
-    int maximumProbe = 0;
-    // int averageProbe = 0;
 
     ofstream outputFile("output.txt");
     outputFile << "kbiveget" << endl;
@@ -134,32 +119,45 @@ int main()
     ifstream inputFile("input.txt");
 
     string currentPath;
-    inputFile >> currentPath;
+    // inputFile >> currentPath;
 
-    // Opening the currentPath
-    ifstream currentFile;
-    currentFile.open(currentPath);
-
-    string wordFromTextFile;
-
-    while (getline(currentFile, wordFromTextFile, ' '))
+    // Iteratively reading text files from input.txt
+    while (inputFile >> currentPath)
     {
-        root = insertNode(root, wordFromTextFile, 0);
-    }
+        Node *root = nullptr;
 
-    InOrderTraversalToComputeMaximumAndAverageProbes(root, outputFile, sumOfProbes, count);
+        int sumOfProbes = 0;
+        int count = 0;
+        int maximumProbes = 0;
+        // int averageProbe = 0;
 
-    if (count > 0)
-    {
-        double averageProbe = static_cast<double>(sumOfProbes) / count;
-        outputFile << "Average number of probes: " << averageProbe << endl;
-    }
-    else
-    {
-        outputFile << "Average number of probes: 0" << endl; // Handle division by zero
-    }
+        // Opening the currentPath
+        ifstream currentFile;
+        currentFile.open(currentPath);
 
-    InOrderTraversal(root, outputFile);
+        string wordFromTextFile;
+
+        while (getline(currentFile, wordFromTextFile, ' '))
+        {
+            root = insertNode(root, wordFromTextFile, 0);
+        }
+
+        InOrderTraversalToComputeMaximumAndAverageProbes(root, outputFile, sumOfProbes, count, maximumProbes);
+
+        outputFile << "Maximum number of probes: " << maximumProbes + 1 << endl;
+
+        if (count > 0)
+        {
+            double averageProbe = static_cast<double>(sumOfProbes) / count;
+            outputFile << "Average number of probes: " << averageProbe << endl;
+        }
+        else
+        {
+            outputFile << "Average number of probes: 0" << endl; // Handle division by zero
+        }
+
+        InOrderTraversal(root, outputFile);
+    }
 
     return 0;
 }
